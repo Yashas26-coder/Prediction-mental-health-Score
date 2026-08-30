@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindPulse — Student Mental Health Readout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="chart-line" aria-hidden="true">
+  <svg viewBox="0 0 1600 120" preserveAspectRatio="none">
+    <polyline id="pulseLine" points="0,60 1600,60" />
+  </svg>
+</div>
+
+<div class="wrap">
+
+  <!-- LEFT / INTAKE PANEL -->
+  <aside class="intake">
+    <div class="intake-inner">
+      <p class="eyebrow">Student Digital&nbsp;Wellbeing Chart</p>
+      <h1>MindPulse</h1>
+      <p class="lede">
+        A quick readout of how screen habits, sleep, and study rhythm are
+        showing up in a student's wellbeing — modeled from real behavioral
+        signals, not a quiz.
+      </p>
+
+      <dl class="legend">
+        <div>
+          <dt>01</dt>
+          <dd>Fill in the chart on the right</dd>
+        </div>
+        <div>
+          <dt>02</dt>
+          <dd>Signals are sent to the prediction model</dd>
+        </div>
+        <div>
+          <dt>03</dt>
+          <dd>Your readout appears below the line</dd>
+        </div>
+      </dl>
+
+      <div class="status-line">
+        <span class="dot" id="apiDot"></span>
+        <span id="apiStatus">Checking model connection…</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT / FORM PANEL -->
+  <main class="form-panel">
+    <form id="predictForm" novalidate>
+
+      <section class="field-group">
+        <h2><span class="tag">Demographics</span></h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="Age" min="10" max="100" placeholder="e.g. 21" required>
+            <span class="hint">10 – 100 years</span>
+            <span class="err" data-for="age"></span>
+          </div>
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="Gender" required>
+              <option value="" disabled selected>Select…</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <span class="err" data-for="gender"></span>
+          </div>
+          <div class="field">
+            <label for="country">Country</label>
+            <input type="text" id="country" name="Country" placeholder="e.g. India" required>
+            <span class="hint">Type your country</span>
+            <span class="err" data-for="country"></span>
+          </div>
+          <div class="field">
+            <label for="academicLevel">Academic level</label>
+            <select id="academicLevel" name="Academic_Level" required>
+              <option value="" disabled selected>Select…</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+            </select>
+            <span class="err" data-for="academicLevel"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="field-group">
+        <h2><span class="tag">Digital habits</span></h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="platform">Most used platform</label>
+            <select id="platform" name="Most_Used_Platform" required>
+              <option value="" disabled selected>Select…</option>
+              <option>Facebook</option>
+              <option>LinkedIn</option>
+              <option>Instagram</option>
+              <option>Snapchat</option>
+              <option>Twitter</option>
+              <option>YouTube</option>
+              <option>TikTok</option>
+              <option>LINE</option>
+              <option>KakaoTalk</option>
+              <option>VKontakte</option>
+              <option>WhatsApp</option>
+              <option>WeChat</option>
+            </select>
+            <span class="err" data-for="platform"></span>
+          </div>
+          <div class="field">
+            <label for="purpose">Main purpose of use</label>
+            <select id="purpose" name="Purpose_Of_Use" required>
+              <option value="" disabled selected>Select…</option>
+              <option value="Networking">Networking</option>
+              <option value="Education">Education</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="News">News</option>
+            </select>
+            <span class="err" data-for="purpose"></span>
+          </div>
+          <div class="field">
+            <label for="dailyUsage">Avg. daily usage (hours)</label>
+            <input type="number" id="dailyUsage" name="Avg_Daily_Usage_Hours" min="0" max="24" step="0.1" placeholder="e.g. 4.5" required>
+            <span class="hint">0 – 24 hours</span>
+            <span class="err" data-for="dailyUsage"></span>
+          </div>
+          <div class="field">
+            <label for="unlocks">Daily phone unlocks</label>
+            <input type="number" id="unlocks" name="Daily_Unlocks" min="0" step="1" placeholder="e.g. 60" required>
+            <span class="hint">0 or more</span>
+            <span class="err" data-for="unlocks"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="field-group">
+        <h2><span class="tag">Lifestyle</span></h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="studyHours">Study hours / day</label>
+            <input type="number" id="studyHours" name="Study_Hours" min="0" step="0.1" placeholder="e.g. 3" required>
+            <span class="hint">0 or more</span>
+            <span class="err" data-for="studyHours"></span>
+          </div>
+          <div class="field">
+            <label for="activityHours">Physical activity (hours)</label>
+            <input type="number" id="activityHours" name="Physical_Activity_Hours" min="0" max="24" step="0.1" placeholder="e.g. 1" required>
+            <span class="hint">0 – 24 hours</span>
+            <span class="err" data-for="activityHours"></span>
+          </div>
+          <div class="field">
+            <label for="sleepHours">Sleep / night (hours)</label>
+            <input type="number" id="sleepHours" name="Sleep_Hours_Per_Night" min="0" max="24" step="0.1" placeholder="e.g. 7" required>
+            <span class="hint">0 – 24 hours</span>
+            <span class="err" data-for="sleepHours"></span>
+          </div>
+          <div class="field">
+            <label for="stress">Stress level</label>
+            <select id="stress" name="Stress_Level" required>
+              <option value="" disabled selected>Select…</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Very High">Very High</option>
+            </select>
+            <span class="err" data-for="stress"></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="submit-row">
+        <button type="submit" id="submitBtn">
+          <span class="btn-label">Run the readout</span>
+          <span class="btn-loader" aria-hidden="true"></span>
+        </button>
+        <p class="api-note">Sending to <code>http://127.0.0.1:8000/predict</code></p>
+      </div>
+
+      <div id="formError" class="form-error" role="alert" hidden></div>
+    </form>
+
+    <!-- RESULT CARD -->
+    <section id="resultCard" class="result-card" hidden aria-live="polite">
+      <div class="result-top">
+        <span class="tag">Readout</span>
+        <button type="button" id="closeResult" aria-label="Dismiss readout">✕</button>
+      </div>
+
+      <div class="result-body">
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 240 140" class="gauge">
+            <path id="gaugeTrack" class="gauge-track" d="M20,120 A100,100 0 0,1 220,120" />
+            <path id="gaugeFill" class="gauge-fill" d="M20,120 A100,100 0 0,1 220,120" />
+            <circle id="gaugeNeedleDot" cx="120" cy="120" r="4" />
+          </svg>
+          <div class="gauge-readout">
+            <span id="scoreValue">--</span>
+            <span class="scale">/ 10</span>
+          </div>
+        </div>
+
+        <div class="result-meta">
+          <p class="result-label" id="resultLabel">—</p>
+          <p class="result-desc" id="resultDesc">Fill the chart and run a readout to see where things stand.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
