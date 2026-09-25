@@ -1,6 +1,6 @@
 
 
-const API_BASE = "https://prediction-mental-health-score.onrender.com";
+const API_BASE = "https://prediction-mental-health-score-1.onrender.com";
 const PREDICT_URL = `${API_BASE}/predict`;
 
 const form = document.getElementById("predictForm");
