@@ -43,24 +43,29 @@ def greet():
     return{'Message':'Welcome to the Yashas Dev Page'}
 
 
-@app.post('/predict',response_model=predictionsResponse)
-def predict(data:StudentData):
-    country_group= data.country if data.Country in top_countries else "Other"
-    input_row =pd.DataFrame([{
-        'Age':data.Age,
-        'Gender':data.Gender,
-        'Country':data.Country,
-        'Academic_Level':data.Academic_Level,
-        'Most_Used_Platform':data.Most_Used_Platform,
-        'Purpose_Of_Use':data.Purpose_Of_Use,
-        'Avg_Daily_Usage_Hours':data.Avg_Daily_Usage_Hours,
-        'Daily_Unlocks':data.Daily_Unlocks,
-        'Study_Hours':data.Study_Hours,
-        'Physical_Activity_Hours':data.Physical_Activity_Hours,
-        'Sleep_Hours_Per_Night':data.Sleep_Hours_Per_Night,
-        'Stress_Level':data.Stress_Level,
-        'Grouped_Countries':country_group
+@app.post('/predict', response_model=predictionsResponse)
+def predict(data: StudentData):
+
+    country_group = data.Country if data.Country in top_countries else "Other"
+
+    input_row = pd.DataFrame([{
+        'Age': data.Age,
+        'Gender': data.Gender,
+        'Country': data.Country,
+        'Academic_Level': data.Academic_Level,
+        'Most_Used_Platform': data.Most_Used_Platform,
+        'Purpose_Of_Use': data.Purpose_Of_Use,
+        'Avg_Daily_Usage_Hours': data.Avg_Daily_Usage_Hours,
+        'Daily_Unlocks': data.Daily_Unlocks,
+        'Study_Hours': data.Study_Hours,
+        'Physical_Activity_Hours': data.Physical_Activity_Hours,
+        'Sleep_Hours_Per_Night': data.Sleep_Hours_Per_Night,
+        'Stress_Level': data.Stress_Level,
+        'Grouped_Countries': country_group
     }])
 
-    predictions=model.predict(input_row) 
-    return predictionsResponse(predicted_mental_Health_score=round(float(predictions),2))
+    predictions = model.predict(input_row)
+
+    return predictionsResponse(
+        predicted_mental_Health_score=round(float(predictions[0]), 2)
+    )
