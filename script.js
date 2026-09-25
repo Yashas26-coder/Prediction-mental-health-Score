@@ -1,8 +1,4 @@
-// ============================================================
-// MindPulse — frontend logic
-// Talks to a locally running FastAPI backend at:
-//   http://127.0.0.1:8000/predict
-// ============================================================
+
 
 const API_BASE = "https://prediction-mental-health-score.onrender.com";
 const PREDICT_URL = `${API_BASE}/predict`;
