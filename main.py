@@ -43,7 +43,7 @@ def greet():
     return{'Message':'Welcome to the Yashas Dev Page'}
 
 
-@app.post('/predict', response_model=predictionsResponse)
+@app.post('/predict')
 def predict(data: StudentData):
 
     country_group = data.Country if data.Country in top_countries else "Other"
@@ -66,6 +66,6 @@ def predict(data: StudentData):
 
     predictions = model.predict(input_row)
 
-    return predictionsResponse(
-        predicted_mental_Health_score=round(float(predictions[0]), 2)
-    )
+    return {
+        "predicted_mental_Health_score": round(float(predictions[0]), 2)
+    }
