@@ -315,7 +315,7 @@ form.addEventListener("submit", async (e) => {
     if (err instanceof TypeError) {
       // fetch network failure — server unreachable, CORS block, etc.
       showFormError(
-        "Couldn't reach the prediction server at 127.0.0.1:8000. Make sure the FastAPI backend is running, then try again."
+        "Couldn't reach the deployed prediction server. Please try again."
       );
     } else {
       showFormError(err.message || "Something went wrong while getting the readout.");
